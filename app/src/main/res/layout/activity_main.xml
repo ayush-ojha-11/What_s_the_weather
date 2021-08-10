@@ -214,5 +214,41 @@
         app:layout_constraintTop_toBottomOf="@+id/city"
         app:layout_constraintVertical_bias="0.001" />
 
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:padding="2dp"
+        android:showText="true"
+        android:text="Unit"
+        android:textColor="@color/black"
+        android:textOff="°C"
+        android:textOn="°F"
+        android:thumbTint="@color/browser_actions_bg_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <Switch
+        android:id="@+id/switch2"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:padding="2dp"
+        android:showText="true"
+        android:text="Unit"
+        android:textColor="@color/black"
+        android:textOff="°C"
+        android:textOn="°F"
+        android:thumbTint="@color/browser_actions_bg_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

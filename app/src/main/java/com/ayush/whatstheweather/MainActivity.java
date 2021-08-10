@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.DisplayMetrics;
@@ -43,6 +45,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         View view = this.getWindow().getDecorView();
-        view.setBackgroundColor(Color.rgb(222,222,222));
+        view.setBackgroundColor(Color.rgb(230,232,250));
         setInitialWeather();
 
       //new one mediation
@@ -220,13 +224,31 @@ public class MainActivity extends AppCompatActivity {
 
 
             JSONObject jsonObjectMain = jsonResponse.getJSONObject("main");
+            JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
+            String wind = jsonObjectWind.getString("speed");
             double temp = jsonObjectMain.getDouble("temp");
             double feelsLike = jsonObjectMain.getDouble("feels_like");
             double humidity = jsonObjectMain.getDouble("humidity");
+
+            double imperialTemp = temp * 1.8 +32;
+            double imperialFeelsLike = feelsLike * 1.8 + 32;
+            double WindSpeedInMilesPerHour = Double.parseDouble(wind) * 2.237;
+
+            //Rounding off to 2 decimal Places using BigDecimal
+
+            BigDecimal bigDecimalTemp = BigDecimal.valueOf(imperialTemp);
+            double tempInF = (bigDecimalTemp.setScale(2, RoundingMode.HALF_UP)).doubleValue();
+
+            BigDecimal bigDecimalFeels = BigDecimal.valueOf(imperialFeelsLike);
+            double feelsLikeInF = (bigDecimalFeels.setScale(2,RoundingMode.HALF_UP)).doubleValue();
+
+            BigDecimal bigDecimalWind = BigDecimal.valueOf(WindSpeedInMilesPerHour);
+            double imperialWindSpeed = (bigDecimalWind.setScale(2,RoundingMode.HALF_UP)).doubleValue();
+
+
             Double.toString(temp);
             Double.toString(feelsLike);
-            JSONObject jsonObjectWind = jsonResponse.getJSONObject("wind");
-            String wind = jsonObjectWind.getString("speed");
+
             JSONObject jsonObjectSys = jsonResponse.getJSONObject("sys");
 
             String country = jsonObjectSys.getString("country");
@@ -242,12 +264,47 @@ public class MainActivity extends AppCompatActivity {
             String time = df.format(Calendar.getInstance().getTime());
             timeView.setText("  Last Updated : \n" + time);
 
+            //Making the switch1 Invisible and the switch2 Visible
+            @SuppressLint("UseSwitchCompatOrMaterialCode")
+            Switch switch1 = findViewById(R.id.switch1);
+
+            @SuppressLint("UseSwitchCompatOrMaterialCode")
+            Switch switch2 = findViewById(R.id.switch2);
+
+            switch1.setVisibility(View.GONE);
+            switch2.setVisibility(View.VISIBLE);
+            switch2.setChecked(false);
+
+            // Usage Of switch2
+
+            switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if(isChecked) {
+                        tempView.setText(tempInF+ "°F");
+                        feelsView.setText(feelsLikeInF+ "°F");
+                        windView.setText(imperialWindSpeed+" m/h");
+                    }
+                    else {
+                        tempView.setText(temp+ "°C");
+                        feelsView.setText(feelsLike + "°C");
+                        windView.setText(wind+" m/s");
+                    }
+
+                }
+            });
+
+
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void setInitialWeather() { //Locaation Based Weather data
+    @SuppressLint("SetTextI18n")
+    public void setInitialWeather() { //Location Based Weather data
 
         TextView cityName = findViewById(R.id.city);
         TextView tempView = findViewById(R.id.temp);
@@ -261,8 +318,8 @@ public class MainActivity extends AppCompatActivity {
         String coun = getIntent().getStringExtra("Country");
         String a = getIntent().getStringExtra("CityName");
         cityName.setText(a + "," + coun);
-        String b = getIntent().getStringExtra("Temperature");
-        tempView.setText(b + "°C");
+        String TempInC = getIntent().getStringExtra("Temperature");
+        tempView.setText(TempInC+ "°C");
         String c = getIntent().getStringExtra("Feels");
         feelsView.setText(c + "°C");
         String d = getIntent().getStringExtra("Humidity");
@@ -271,9 +328,38 @@ public class MainActivity extends AppCompatActivity {
         desView.setText(e);
         String f = getIntent().getStringExtra("WindSpeed");
         windView.setText(f+" m/s");
-        DateFormat df = new SimpleDateFormat("dd-MMM, h:mm a");
+
+
+        String tempInF = getIntent().getStringExtra("ImperialTemp");
+        String feelsLikeInF = getIntent().getStringExtra("ImperialFeelsLike");
+        String ImperialWindSpeed = getIntent().getStringExtra("ImperialWindSpeed");
+
+
+        @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd-MMM, h:mm a");
         String timeOfCall = df.format(Calendar.getInstance().getTime());
         timeView.setText("  Last Updated : \n" + timeOfCall);
+
+        //Setting unit change based on the switch selection by the user
+
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch switchButton = (Switch) findViewById(R.id.switch1);
+
+        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    tempView.setText(tempInF+ "°F");
+                    feelsView.setText(feelsLikeInF+ "°F");
+                    windView.setText(ImperialWindSpeed+" m/h");
+                }
+                else {
+                    tempView.setText(TempInC+ "°C");
+                    feelsView.setText(c + "°C");
+                    windView.setText(f+" m/s");
+                }
+
+            }
+        });
         ImageView weatherIcon = findViewById(R.id.weathericon);
         String dayNight = getIntent().getStringExtra("DayOrNight");
         if (dayNight.equals("day")) {
