@@ -2,4 +2,5 @@
     <string name="app_name">What\'s The Weather</string>
     <string name="check_updates"><a href="https://www.instagram.com/veteran.ayush/">Instagram</a></string>
     <string name="icon_credit"><a href="https://www.freepik.com">Freepik</a></string>
+    <string name="About">What\'s The Weather application determines the user\'s location providing the GPS is turned on and shows the weather data of that particular location. It has also been provided with SEARCH feature that allows users to get weather data of any CITY by searching.</string>
 </resources>

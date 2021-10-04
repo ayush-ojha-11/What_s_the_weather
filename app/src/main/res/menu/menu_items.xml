@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/app_bar_search"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="Search"
         app:showAsAction="ifRoom"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.SearchView"
+        tools:ignore="HardcodedText" />
     <item
         android:id="@+id/menu_refresh"
         android:title="Refresh"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        tools:ignore="HardcodedText" />
+    <item
+        android:id="@+id/menu_rate"
+        android:title="Rate and Review"
+        app:showAsAction="never"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/menu_more"
+        android:title="More Applications"
+        app:showAsAction="never"
+        tools:ignore="HardcodedText" />
     <item
         android:id="@+id/menu_about"
-        android:title="About" />
+        android:title="About"
+        tools:ignore="HardcodedText" />
     <item
         android:id="@+id/menu_exit"
-        android:title="Exit" />
+        android:title="Exit"
+        tools:ignore="HardcodedText" />
 </menu>

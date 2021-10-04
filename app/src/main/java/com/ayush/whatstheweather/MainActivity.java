@@ -3,6 +3,7 @@ package com.ayush.whatstheweather;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,10 +52,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private AdView adView;
-    private FrameLayout adContainerView;
 
     String C1 = "https://api.openweathermap.org/data/2.5/weather?q=";
     String C2 = "&appid=00b57cd25d3c916baef0cda450370eb3&units=metric";
@@ -67,7 +68,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.rgb(230,232,250));
+
+        // To check whether location was successfully taken or there was an error and load setInitialWeather() accordingly
+
+        String check = getIntent().getStringExtra("Check");
+        if(check.equals("true"))
         setInitialWeather();
+
+
 
       //new one mediation
 
@@ -79,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     AdapterStatus status = statusMap.get(adapterClass);
                     Log.d("MyApp", String.format(
                             "Adapter name: %s, Description: %s, Latency: %d",
-                            adapterClass, status.getDescription(), status.getLatency()));
+                            adapterClass, Objects.requireNonNull(status).getDescription(), status.getLatency()));
                 }
 
                 loadAd();
@@ -93,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
             }
         });
-        adContainerView = findViewById(R.id.ad_view_container);
+        FrameLayout adContainerView = findViewById(R.id.ad_view_container);
         adView = new AdView(this);
         adView.setAdUnitId("ca-app-pub-2994133956240875/7595589571");
         adContainerView.addView(adView);
@@ -152,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         int itemId = item.getItemId();
@@ -169,6 +178,18 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_exit: {
                 finishAffinity();
                 System.exit(0);
+            }
+            case  R.id.menu_rate:{
+                Uri uri =  Uri.parse("https://play.google.com/store/apps/details?id=com.ayush.whatstheweather");
+                Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(intent);
+                break;
+            }
+            case R.id.menu_more:{
+                Uri uri = Uri.parse("https://play.google.com/store/apps/developer?id=Ayush+Ojha");
+                Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(intent);
+                break;
             }
         }
         return super.onOptionsItemSelected(item);
@@ -260,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
             windView.setText(wind+" m/s");
             desView.setText(description);
             TextView timeView = findViewById(R.id.timeview);
-            DateFormat df = new SimpleDateFormat("dd-MMM, h:mm a");
+            @SuppressLint("SimpleDateFormat") DateFormat df = new SimpleDateFormat("dd-MMM, h:mm a");
             String time = df.format(Calendar.getInstance().getTime());
             timeView.setText("  Last Updated : \n" + time);
 
@@ -313,8 +334,6 @@ public class MainActivity extends AppCompatActivity {
         TextView windView = findViewById(R.id.wspeed);
         TextView desView = findViewById(R.id.des);
         TextView timeView = findViewById(R.id.timeview);
-        String sunriseTimeOfInitial = getIntent().getStringExtra("LocSunrise");
-        String sunsetTimeOfInitial = getIntent().getStringExtra("LocSunset");
         String coun = getIntent().getStringExtra("Country");
         String a = getIntent().getStringExtra("CityName");
         cityName.setText(a + "," + coun);

@@ -42,6 +42,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 
 public class SplashActivity extends AppCompatActivity {
@@ -52,10 +53,10 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);   //Dark Mode for this app is disabled
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
     }
     public  void makeRequest(){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -70,60 +71,54 @@ public class SplashActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Got the Weather response...", Toast.LENGTH_SHORT).show();
 
                     }
-                },1000);
+                },1500);
                 System.out.println(response);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),"Error in getting weather response!",Toast.LENGTH_SHORT).show();
-            }
-        }
+        }, error -> Toast.makeText(getApplicationContext(),"Error in getting weather response!",Toast.LENGTH_SHORT).show()
         );
         requestQueue.add(weatherRequest);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void ForLocation() {
+
+
         final  LocationManager locationManager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             if (getApplicationContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                     || getApplicationContext().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
-                mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            lat = location.getLatitude();
-                            lon = location.getLongitude();
-                            urlForMetricData = String.format(urlForMetricData, lat, lon);
-                            makeRequest();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    System.out.println(lat);
-                                    System.out.println(lon);
-                                    TextView text = (TextView) findViewById(R.id.textView9);
-                                    text.setText(lat + " , " + lon);
-                                    Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-
-                                }
-                            },1000);
-                        }
-                        else if (location == null)
-                        {
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                  if  (! locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ){
-                                      buildAlertMessageNoGps();
-                                  }
-                                  else{
-                                      Toast.makeText(getApplicationContext(),"Try to restart GPS and start the app!",Toast.LENGTH_SHORT).show();
-                                  }
-                                }
-                            },2000);
-                        }
+                mFusedLocationClient.getLastLocation().addOnSuccessListener((OnSuccessListener<Location>) location -> {
+                    if (location != null) {
+                        lat = location.getLatitude();
+                        lon = location.getLongitude();
+                        urlForMetricData = String.format(urlForMetricData, lat, lon);
+                        makeRequest();
+                        new Handler().postDelayed(new Runnable() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void run() {
+                                TextView text = (TextView) findViewById(R.id.textView9);
+                                text.setText("Latitude = "+lat+ " , "+"Longitude = "+lon);
+                                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                            }
+                        },1000);
+                    }
+                    else
+                    {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                              if  (! Objects.requireNonNull(locationManager).isProviderEnabled(LocationManager.GPS_PROVIDER) ){
+                                  buildAlertMessageNoGps();
+                              }
+                              else{
+                                  Toast.makeText(getApplicationContext(),"\t\t\tProblem in getting location,\nTry Searching by typing CITY name!",Toast.LENGTH_LONG).show();
+                                  Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                                  intent.putExtra("Check","false");
+                                  startActivity(intent);
+                              }
+                            }
+                        },1000);
                     }
                 });
 
@@ -137,16 +132,16 @@ public class SplashActivity extends AppCompatActivity {
 
     public void buildAlertMessageNoGps(){
         final  AlertDialog.Builder builder =new AlertDialog.Builder(this);
-        builder.setMessage("It seems your GPS is off. Enable it?").setCancelable(false).setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent showGPSSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(showGPSSettings);
-            }
+        builder.setMessage("It seems your GPS is off. Enable it?").setCancelable(false).setPositiveButton("YES", (dialog, which) -> {
+            Intent showGPSSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(showGPSSettings);
         }).setNegativeButton("NO", (dialog, which) -> {
             dialog.cancel();
-            finishAffinity();
-            System.exit(0);
+            Toast.makeText(this,"Search weather of any CITY by typing correct City Name",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+            intent.putExtra("Check","false");
+            startActivity(intent);
+
         });
         final AlertDialog Alert =builder.create();
         Alert.show();
@@ -197,12 +192,12 @@ public class SplashActivity extends AppCompatActivity {
             String timeOfCall = cf.format(Calendar.getInstance().getTime());
 
             //sunrise time
-            long dv = Long.valueOf(sunrise)*1000; // it needs to be in milliseconds
+            long dv = Long.parseLong(sunrise)*1000; // it needs to be in milliseconds
             Date df = new java.util.Date(dv);
             @SuppressLint("SimpleDateFormat") String sunriseTime = new SimpleDateFormat("HH:mm:ss").format(df);
 
             //sunset time
-            long ev = Long.valueOf(sunset)*1000;
+            long ev = Long.parseLong(sunset)*1000;
             Date ef = new java.util.Date(ev);
             @SuppressLint("SimpleDateFormat") String sunsetTime = new SimpleDateFormat("HH:mm:ss").format(ef);
 
@@ -210,9 +205,9 @@ public class SplashActivity extends AppCompatActivity {
             System.out.println(sunriseTime);
             System.out.println(sunsetTime);
 
-            String tc[] = timeOfCall.split(":");
-            String sr[] = sunriseTime.split(":");
-            String ss[] = sunsetTime.split(":");
+            String[] tc = timeOfCall.split(":");
+            String[] sr = sunriseTime.split(":");
+            String[] ss = sunsetTime.split(":");
             String DayOrNight ="";
 
             if(Integer.parseInt(tc[0]) >= Integer.parseInt(sr[0])  && Integer.parseInt(tc[0]) < Integer.parseInt(ss[0]))
@@ -235,6 +230,7 @@ public class SplashActivity extends AppCompatActivity {
             mainactivityintent.putExtra("WindSpeed",wind);
             mainactivityintent.putExtra("Feels",Double.toString(feelsLike));
             mainactivityintent.putExtra("DayOrNight",DayOrNight);
+            mainactivityintent.putExtra("Check","true");
             startActivity(mainactivityintent);
 
         } catch (JSONException e) {
