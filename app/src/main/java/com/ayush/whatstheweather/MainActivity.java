@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         });
         FrameLayout adContainerView = findViewById(R.id.ad_view_container);
         adView = new AdView(this);
-        adView.setAdUnitId("ca-app-pub-2994133956240875/7595589571");
+        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
         adContainerView.addView(adView);
         loadBanner();
 
@@ -298,22 +298,19 @@ public class MainActivity extends AppCompatActivity {
 
             // Usage Of switch2
 
-            switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            switch2.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                    if(isChecked) {
-                        tempView.setText(tempInF+ "°F");
-                        feelsView.setText(feelsLikeInF+ "°F");
-                        windView.setText(imperialWindSpeed+" m/h");
-                    }
-                    else {
-                        tempView.setText(temp+ "°C");
-                        feelsView.setText(feelsLike + "°C");
-                        windView.setText(wind+" m/s");
-                    }
-
+                if(isChecked) {
+                    tempView.setText(tempInF+ "°F");
+                    feelsView.setText(feelsLikeInF+ "°F");
+                    windView.setText(imperialWindSpeed+" m/h");
                 }
+                else {
+                    tempView.setText(temp+ "°C");
+                    feelsView.setText(feelsLike + "°C");
+                    windView.setText(wind+" m/s");
+                }
+
             });
 
 
@@ -363,21 +360,18 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         Switch switchButton = (Switch) findViewById(R.id.switch1);
 
-        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
-                    tempView.setText(tempInF+ "°F");
-                    feelsView.setText(feelsLikeInF+ "°F");
-                    windView.setText(ImperialWindSpeed+" m/h");
-                }
-                else {
-                    tempView.setText(TempInC+ "°C");
-                    feelsView.setText(c + "°C");
-                    windView.setText(f+" m/s");
-                }
-
+        switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                tempView.setText(tempInF+ "°F");
+                feelsView.setText(feelsLikeInF+ "°F");
+                windView.setText(ImperialWindSpeed+" m/h");
             }
+            else {
+                tempView.setText(TempInC+ "°C");
+                feelsView.setText(c + "°C");
+                windView.setText(f+" m/s");
+            }
+
         });
         ImageView weatherIcon = findViewById(R.id.weathericon);
         String dayNight = getIntent().getStringExtra("DayOrNight");
