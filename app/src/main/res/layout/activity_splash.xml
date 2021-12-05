@@ -9,15 +9,16 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.402"
-        app:srcCompat="@drawable/appic" />
+        app:layout_constraintVertical_bias="0.499"
+        app:srcCompat="@mipmap/ic_launcher_round"
+        tools:ignore="VectorDrawableCompat" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -37,6 +38,7 @@
         android:layout_height="wrap_content"
         android:text="Fetching Weather Data of your Location...."
         android:textSize="15sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -50,6 +52,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="What's The Weather"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,6 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10sp"
+        android:textColor="@color/white"
         android:text="*Make sure you have Internet Connection and GPS Turned On"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"

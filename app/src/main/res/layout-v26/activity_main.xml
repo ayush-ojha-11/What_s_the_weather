@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swipeToRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -25,8 +36,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="City"
-        android:textColor="#191970"
+        android:textColor="@color/white"
         android:textSize="25sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.042"
@@ -40,8 +52,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
+
         android:text="Temp in °C"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textSize="55sp"
         app:layout_constraintBottom_toTopOf="@+id/des"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +69,7 @@
         android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
         android:text="Description"
-        android:textColor="#FF0077"
+        android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/ad_view_container"
@@ -76,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.727"
-        app:srcCompat="@drawable/humid"
+        app:srcCompat="@drawable/hh1"
         tools:ignore="UnknownId" />
 
     <TextView
@@ -86,6 +99,7 @@
         android:autoSizeTextType="uniform"
         android:text="Data"
         android:textSize="20sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.061"
@@ -112,6 +126,7 @@
         android:autoSizeTextType="uniform"
         android:text="Data"
         android:textSize="20sp"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.537"
@@ -132,7 +147,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.727"
-        app:srcCompat="@drawable/thermo" />
+        app:srcCompat="@drawable/hot" />
 
     <TextView
         android:id="@+id/feels"
@@ -140,6 +155,7 @@
         android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
         android:text="Data"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -165,6 +181,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
+        android:textColor="@color/white"
         android:text="Humidity %"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -178,6 +195,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
+        android:textColor="@color/white"
         android:text="Wind Speed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -191,6 +209,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
+        android:textColor="@color/white"
         android:text="Feels Like"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -204,6 +223,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoSizeTextType="uniform"
+        android:textColor="@color/white"
         android:text="UpdateTime"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -221,10 +241,11 @@
         android:padding="2dp"
         android:showText="true"
         android:text="Unit"
-        android:textColor="@color/black"
+        android:theme="@style/gmts_BlueButton"
+        android:textColor="@color/white"
         android:textOff="°C"
         android:textOn="°F"
-        android:thumbTint="@color/browser_actions_bg_grey"
+        android:thumbTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.952"
         app:layout_constraintStart_toStartOf="parent"
@@ -239,10 +260,11 @@
         android:padding="2dp"
         android:showText="true"
         android:text="Unit"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textOff="°C"
         android:textOn="°F"
-        android:thumbTint="@color/browser_actions_bg_grey"
+        android:thumbTint="@color/white"
+        android:theme="@style/gmts_BlueButton"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.952"
@@ -251,3 +273,7 @@
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

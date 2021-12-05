@@ -1,38 +1,38 @@
 package com.ayush.whatstheweather;
 
+import static com.ayush.whatstheweather.SplashActivity.lat;
+import static com.ayush.whatstheweather.SplashActivity.lon;
+
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.widget.FrameLayout;
-
-import com.google.android.ads.mediationtestsuite.MediationTestSuite;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.AdapterStatus;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.app.NotificationCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,6 +40,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.AdapterStatus;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -55,27 +62,69 @@ import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String city,country,description,temperature;
     private AdView adView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     String C1 = "https://api.openweathermap.org/data/2.5/weather?q=";
     String C2 = "&appid=00b57cd25d3c916baef0cda450370eb3&units=metric";
     String CityUrl;
+
+   // SplashActivity object = new SplashActivity();
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Creating notification channel for android versions grater than Oreo
+        createNotificationChannel();
+
+
         View view = this.getWindow().getDecorView();
-        view.setBackgroundColor(Color.rgb(230,232,250));
+        view.setBackgroundColor(Color.parseColor("#334756"));
+
+        //getting city name and other details form splash activity for notification
+
+         country = getIntent().getStringExtra("Country");
+         city = getIntent().getStringExtra("CityName");
+         description = getIntent().getStringExtra("Description");
+         temperature = getIntent().getStringExtra("Temperature");
+
+
+
 
         // To check whether location was successfully taken or there was an error and load setInitialWeather() accordingly
 
         String check = getIntent().getStringExtra("Check");
-        if(check.equals("true"))
-        setInitialWeather();
+        if(check.equals("true")) {
+            notifications(); // for notification
+            setInitialWeather();
+        }
 
 
+
+
+        //swipe refresh layout
+
+        swipeRefreshLayout = findViewById(R.id.swipeToRefresh);
+        swipeRefreshLayout.setColorSchemeColors(Color.RED);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(MainActivity.this,SplashActivity.class);
+                        startActivity(intent);
+                    }
+                },700);
+            }
+        });
 
       //new one mediation
 
@@ -103,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         });
         FrameLayout adContainerView = findViewById(R.id.ad_view_container);
         adView = new AdView(this);
-        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+        adView.setAdUnitId("ca-app-pub-7836151475962063/2699034190");
         adContainerView.addView(adView);
         loadBanner();
 
@@ -134,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
     }
 
+    // What's The Weather - An Android based weather application
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +215,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
+            case R.id.menu_map: {
+                String MapUrl ="http://maps.google.com/maps?z=12&t=m&q=loc:%s+%s";
+                MapUrl = String.format(MapUrl,lat,lon);
+                Uri uri = Uri.parse(MapUrl);
+                Intent intent =new Intent(Intent.ACTION_VIEW,uri);
+                startActivity(intent);
+                break;
+            }
             case R.id.menu_refresh: {
                 Intent intent = new Intent(this, SplashActivity.class);
                 startActivity(intent);
@@ -190,6 +248,16 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                 startActivity(intent);
                 break;
+            }
+            case R.id.menu_share:{
+             Intent sendIntent = new Intent();
+             sendIntent.setAction(Intent.ACTION_SEND);
+             sendIntent.putExtra(Intent.EXTRA_TEXT,"Found an amazing Weather App!\n"+"https://play.google.com/store/apps/details?id=com.ayush.whatstheweather");
+             sendIntent.setType("text/plain");
+             sendIntent.putExtra(Intent.EXTRA_TITLE,"Sharing the App!");
+             Intent shareIntent = Intent.createChooser(sendIntent,null);
+             startActivity(shareIntent);
+             break;
             }
         }
         return super.onOptionsItemSelected(item);
@@ -333,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
         TextView timeView = findViewById(R.id.timeview);
         String coun = getIntent().getStringExtra("Country");
         String a = getIntent().getStringExtra("CityName");
-        cityName.setText(a + "," + coun);
+        cityName.setText(a + ", " + coun);
         String TempInC = getIntent().getStringExtra("Temperature");
         tempView.setText(TempInC+ "°C");
         String c = getIntent().getStringExtra("Feels");
@@ -600,6 +668,43 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
 
+        }
+    }
+
+
+
+    private void notifications()
+    {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.this,"Channel")
+                .setSmallIcon(R.drawable.appic)
+                .setColor(Color.parseColor("#334756"))
+                .setContentTitle(city+", "+country)
+                .setAutoCancel(true)
+                .setContentText(temperature+"°C, "+description);
+
+        Intent notificationIntent = new Intent(this,SplashActivity.class);
+        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent intent = PendingIntent
+                .getActivity(this,0,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(intent);
+
+        NotificationManager manager =(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0,builder.build());
+    }
+
+
+
+    private void createNotificationChannel() {
+
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Ayush Ojha";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("Channel", name, importance);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }

@@ -14,6 +14,13 @@
         android:title="Refresh"
         app:showAsAction="never"
         tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/menu_map"
+        android:title="Get location on map"
+        app:showAsAction="never"
+        tools:ignore="HardcodedText" />
+
     <item
         android:id="@+id/menu_rate"
         android:title="Rate and Review"
@@ -25,6 +32,13 @@
         android:title="More Applications"
         app:showAsAction="never"
         tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/menu_share"
+        android:title="Share"
+        app:showAsAction="never"
+        tools:ignore="HardcodedText" />
+
     <item
         android:id="@+id/menu_about"
         android:title="About"

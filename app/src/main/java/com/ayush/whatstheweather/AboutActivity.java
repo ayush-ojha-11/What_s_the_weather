@@ -1,18 +1,17 @@
 package com.ayush.whatstheweather;
 
+import static android.text.method.LinkMovementMethod.getInstance;
+
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Objects;
-
-import static android.text.method.LinkMovementMethod.*;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -23,7 +22,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         Objects.requireNonNull(getSupportActionBar()).hide();
         View view = this.getWindow().getDecorView();
-        view.setBackgroundColor(Color.rgb(230,232,250));
+        view.setBackgroundColor(Color.parseColor("#334756"));
         @SuppressLint("CutPasteId") TextView update = (TextView) findViewById(R.id.updatecheck);
         update.setMovementMethod(getInstance());
 

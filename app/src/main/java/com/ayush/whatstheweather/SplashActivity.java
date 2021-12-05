@@ -3,15 +3,16 @@ package com.ayush.whatstheweather;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +26,6 @@ import androidx.core.app.ActivityCompat;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,8 +45,9 @@ import java.util.Date;
 import java.util.Objects;
 
 
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
-    double lat,lon;
+    public static double lat,lon;
     FusedLocationProviderClient mFusedLocationClient;
     private static final int MY_FINE_LOCATION_REQUEST = 100;
     String urlForMetricData = "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=00b57cd25d3c916baef0cda450370eb3&units=metric";
@@ -54,6 +55,8 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);   //Dark Mode for this app is disabled
+        View view = this.getWindow().getDecorView();
+        view.setBackgroundColor(Color.parseColor("#334756"));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         Objects.requireNonNull(getSupportActionBar()).hide();
@@ -89,8 +92,10 @@ public class SplashActivity extends AppCompatActivity {
                     || getApplicationContext().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
                 mFusedLocationClient.getLastLocation().addOnSuccessListener((OnSuccessListener<Location>) location -> {
                     if (location != null) {
+
                         lat = location.getLatitude();
                         lon = location.getLongitude();
+
                         urlForMetricData = String.format(urlForMetricData, lat, lon);
                         makeRequest();
                         new Handler().postDelayed(new Runnable() {
@@ -99,7 +104,7 @@ public class SplashActivity extends AppCompatActivity {
                             public void run() {
                                 TextView text = (TextView) findViewById(R.id.textView9);
                                 text.setText("Latitude = "+lat+ " , "+"Longitude = "+lon);
-                                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Successfully got your location", Toast.LENGTH_SHORT).show();
                             }
                         },1000);
                     }
